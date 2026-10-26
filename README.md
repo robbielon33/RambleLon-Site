@@ -13,7 +13,7 @@ The app listens on port 3000. The public site is `/`; the private dashboard is `
 
 **Local demo password:** `ramblelon-local-demo`. Set `ADMIN_PASSWORD` to override it. This fallback is for local development only. Production startup requires both `ADMIN_PASSWORD` and `SESSION_SECRET`. Set real credentials securely in environment settings, never in source control. The app does not load `.env` automatically; use your shell's environment or Node's `--env-file` option.
 
-Requests and email previews persist in `.data/ramblelon.sqlite`, which is ignored by Git. Set `DATA_DIR` for a different database location and `PORT` for a different port. Sessions are held in memory and require signing in again after server restarts. Use a persistent session store and HTTPS before a public production deployment.
+Requests and email previews persist in `.data/ramblelon.sqlite`, which is ignored by Git. Set `DATA_DIR` for a different database location and `PORT` for a different port. Local development sessions are held in memory. Production sessions are saved under DATA_DIR/sessions with an eight-hour expiry. On Render, secure cookies recognize its HTTPS reverse proxy.
 
 ## Current behavior
 
@@ -83,3 +83,19 @@ npm run test:cloud
 This command runs the suite on an isolated temporary database and records the results in the configured Cypress Cloud project. It requires HTTPS access to `api.cypress.io` in addition to the binary download domains. Local `npm run test:e2e` continues to work without a Cloud account or key and does not record results. The earlier local runs are not uploaded retroactively; recording creates a new run. The recording command prints the Cloud run URL after successful connection.
 
 Cloud recording has been verified for project `njigat`. Test Replay uploads additionally require HTTPS access to `s3.amazonaws.com`; run results can record successfully even if replay upload is blocked.
+
+## Hosted demo on Render
+
+[Deploy to Render](https://render.com/deploy?repo=https://github.com/robbielon33/RambleLon-Site)
+
+The repository's `render.yaml` supplies the build command, startup command, Node version, health check, and database storage. It selects a **paid Starter web service plus a 1 GB persistent disk**. Review the current price in Render before creating it. No paid hosting is provisioned merely by adding this file to GitHub.
+
+1. Sign in to Render with GitHub and allow access to this repository.
+2. Open the deploy link above. If prompted, choose the Blueprint flow for this repository.
+3. Name the Blueprint `ramblelon-demo`.
+4. Enter a strong, unique `ADMIN_PASSWORD` in Render's private environment-variable field; do not put it in chat or GitHub. Render automatically generates `SESSION_SECRET`.
+5. Review the service and disk charges, then deploy when you accept them.
+6. Wait for Live and open the HTTPS address Render assigns. The site is at `/` and the password-protected dashboard at `/dashboard`.
+7. Submit a fake inquiry, sign in, and confirm the recommended quote. Emails remain previews: no SMTP provider is configured.
+
+Deploy this Blueprint as a **Web Service**, not a Static Site; the booking API needs a running Node server. Render sets its own `PORT` and `RENDER` variables. SQLite and session files are stored on the persistent disk. This single-instance demo keeps rate-limit counts in memory; they reset when the service restarts. A Squarespace domain can be connected afterward using Render's Custom Domains settings without transferring domain registration.

@@ -23,3 +23,17 @@ test('booking API protects records, validates input, orders DC first, persists o
  await request('/api/logout',{method:'POST',cookie});assert.equal((await request('/api/bookings',{cookie})).response.status,401);
  }finally{await server.close();}
 });
+
+test('Render HTTPS proxy supports secure login cookies and rejects cross-origin writes',async()=>{
+ const server=await testServer({NODE_ENV:'production',RENDER:'true'});
+ try{
+  const host=new URL(server.base).host;
+  const response=await fetch(server.base+'/api/login',{method:'POST',headers:{'Content-Type':'application/json','X-Forwarded-Proto':'https','Origin':`https://${host}`},body:JSON.stringify({password:'ramblelon-local-demo'})});
+  assert.equal(response.status,200);
+  const cookie=response.headers.get('set-cookie');
+  assert.match(cookie,/; Secure/i);assert.match(cookie,/; HttpOnly/i);assert.match(cookie,/; SameSite=Strict/i);
+  const authenticated=await fetch(server.base+'/api/bookings',{headers:{cookie:cookie.split(';')[0],'X-Forwarded-Proto':'https'}});assert.equal(authenticated.status,200);
+  const blocked=await fetch(server.base+'/api/logout',{method:'POST',headers:{cookie:cookie.split(';')[0],'X-Forwarded-Proto':'https',Origin:'https://other.example'}});assert.equal(blocked.status,403);
+  const health=await fetch(server.base+'/healthz');assert.equal(health.status,200);assert.deepEqual(await health.json(),{ok:true});
+ }finally{await server.close();}
+});

@@ -1,5 +1,6 @@
 import express from 'express';
 import session from 'express-session';
+import fileStoreFactory from 'session-file-store';
 import { rateLimit } from 'express-rate-limit';
 import nodemailer from 'nodemailer';
 import { DatabaseSync } from 'node:sqlite';
@@ -15,11 +16,15 @@ const dir = resolve(process.env.DATA_DIR || '.data'); mkdirSync(dir,{recursive:t
 const db = new DatabaseSync(resolve(dir,'ramblelon.sqlite'));
 db.exec('PRAGMA journal_mode=WAL; CREATE TABLE IF NOT EXISTS bookings (id TEXT PRIMARY KEY, created TEXT NOT NULL, data TEXT NOT NULL, status TEXT NOT NULL DEFAULT \'new\', quote INTEGER, email_status TEXT NOT NULL DEFAULT \'pending\'); CREATE TABLE IF NOT EXISTS emails (id INTEGER PRIMARY KEY, booking_id TEXT NOT NULL, recipient TEXT NOT NULL, subject TEXT NOT NULL, body TEXT NOT NULL, status TEXT NOT NULL DEFAULT \'pending\');');
 const app = express(); app.disable('x-powered-by');
+// Render terminates HTTPS at its reverse proxy, one hop from this service.
+if (process.env.RENDER === 'true') app.set('trust proxy', 1);
+const FileStore = fileStoreFactory(session);
 app.use((req,res,next)=>{res.set('X-Content-Type-Options','nosniff');res.set('Referrer-Policy','same-origin');res.set('X-Frame-Options','DENY');next();});
 app.use(express.json({limit:'30kb'}));
-app.use(session({secret:process.env.SESSION_SECRET || randomBytes(32).toString('hex'),resave:false,saveUninitialized:false,cookie:{httpOnly:true,sameSite:'strict',secure:production,maxAge:8*60*60*1000}}));
+app.use(session({store:production ? new FileStore({path:resolve(dir,'sessions'),ttl:8*60*60,retries:1}) : undefined,secret:process.env.SESSION_SECRET || randomBytes(32).toString('hex'),resave:false,saveUninitialized:false,cookie:{httpOnly:true,sameSite:'strict',secure:production,maxAge:8*60*60*1000}}));
 app.use('/api',(req,res,next)=>{res.set('Cache-Control','no-store');if (!['GET','HEAD'].includes(req.method) && req.get('origin') && req.get('origin') !== `${req.protocol}://${req.get('host')}`) return res.status(403).json({error:'Cross-origin request rejected.'});next();});
 const auth = (req,res,next)=>req.session.admin ? next() : res.status(401).json({error:'Sign in required.'});
+app.get('/healthz',(req,res)=>{db.prepare('SELECT 1').get();res.json({ok:true});});
 app.get('/api/options',(req,res)=>res.json({venues}));
 app.post('/api/login',rateLimit({windowMs:15*60*1000,limit:15}), (req,res,next)=>{
  const candidate = typeof req.body?.password === 'string' && req.body.password.length <= 1024 ? req.body.password : '';
