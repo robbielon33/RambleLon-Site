@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="RambleLon — DC-based producer and DJ bringing the whimsy and groove. UK garage, house, swingy drums, and heavy basslines.">
+<title>RambleLon — UK Garage &amp; House DJ</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="navigation"><a class="wordmark" href="#">RAMBLELON<span>®</span></a><nav aria-label="Main navigation"><a href="#about">About</a><a href="#mixes">Mixes</a><a href="#dates">Dates</a><a href="#booking">Booking ↗</a></nav></header>
+<main>
+<section class="hero" aria-labelledby="hero-title">
+<div class="eyebrow"><span class="light"></span> UK GARAGE / HOUSE</div>
+<h1 id="hero-title">GOOD MUSIC.<br><em>LONG NIGHTS.</em></h1>
+<div class="hero-bottom"><p>DC-based producer and DJ bringing the whimsy and groove—and maybe a little too much 808 (impossible)</p><a class="button" href="#mixes">EXPLORE THE SOUND <span>↗</span></a></div>
+<div class="record" aria-hidden="true"><div class="record-label">RAMBLE<br>LON<div class="hole"></div><small>SIDE A · 33⅓ RPM</small></div></div>
+<div class="hero-caption">TURN IT UP. STAY A WHILE.</div>
+</section>
+<div class="ticker" aria-hidden="true">IN THE MIX <span>✳</span> ON THE DECKS <span>✳</span> IN THE MOMENT <span>✳</span> IN THE MIX <span>✳</span> ON THE DECKS</div>
+<section id="about" class="section about" aria-labelledby="about-title"><div class="section-heading"><div><p class="eyebrow">01 / BEHIND THE DECKS</p><h2 id="about-title">A touch of whimsy.</h2></div></div><div class="bio-copy"><p>RambleLon draws from a life spent creating and performing, and channels all of it into electronic music that's usually on some kind of 4x4, built on swingy drums and heavy basslines.</p><p>His productions and DJ sets share the same DNA: purposeful, groove-driven, and always a little harder to pin down than you'd expect. And always with a touch of whimsy.</p></div></section>
+<section id="mixes" class="section"><div class="section-heading"><div><p class="eyebrow">02 / THE SOUND</p><h2>In the mix.</h2></div><span class="aside">PRESS PLAY. FIND YOUR FREQUENCY.</span></div><div class="mix-panel"><div class="mix-art" aria-hidden="true"><span>RL</span><small>SESSIONS / 001</small></div><div class="mix-copy"><span class="tag">COMING SOON</span><h3>A little something<br>for your speakers.</h3><p>UK garage and house, selected by RambleLon. The first mix is coming soon—check back for fresh selections and full-length sets.</p></div></div></section>
+<section id="dates" class="section dates"><div class="section-heading"><div><p class="eyebrow">03 / OUT AFTER DARK</p><h2>Find the floor.</h2></div></div><div class="empty-dates"><span class="asterisk" aria-hidden="true">✳</span><div><h3>Next night loading.</h3><p>Upcoming gigs will be announced here. Stay tuned.</p></div><span class="tag">DATES TBA</span></div></section>
+<section id="booking" class="booking"><p class="eyebrow">04 / LET’S MAKE SOME NOISE</p><h2>Your night.<br><em>My decks.</em></h2><p class="form-intro">UK garage, house, or a little more lounge. Tell me what you have in mind.<br>Bookings start at $500. Final pricing depends on event details.</p>
+<form id="inquiry" novalidate>
+<div class="form-grid">
+<label>Your name<input name="name" required maxlength="200" autocomplete="name"></label>
+<label>Email<input name="email" type="email" required maxlength="254" autocomplete="email"></label>
+<label>Event date<input name="date" type="date" required></label>
+<label>Event type<select name="eventType" required><option value="">Choose an event type</option><option>Fashion pop-up</option><option>Private event</option><option>Club night</option><option>Wedding</option><option>Other</option></select></label>
+<label>Location<select name="location" required><option value="">Choose a location</option><option value="DC">Washington, DC</option><option value="Other">Somewhere else</option></select></label>
+<label id="city-field" hidden>City<input name="city" maxlength="200" disabled></label>
+<label>Venue<select name="venue" required disabled><option value="">Choose a location first</option></select></label>
+<label id="other-venue-field" hidden>Venue name<input name="otherVenue" maxlength="200" disabled></label>
+<label>Set length (hours)<input name="duration" type="number" min="0.25" max="24" step="0.25" required></label>
+<label>Can I bring my own musical selections?<select name="musicFreedom" required><option value="">Choose an option</option><option value="yes">Yes — do your thing</option><option value="no">Let’s discuss the music</option></select></label>
+<label>Do you need me to bring DJ gear?<select name="gear" required><option value="">Choose an option</option><option value="no">No — gear is provided</option><option value="yes">Yes — bring your gear (+$150)</option></select></label>
+<label class="wide">The vibe, equipment available, and anything else<textarea name="notes" rows="4" maxlength="2000"></textarea></label>
+</div><p class="privacy-note">Your details are used to review and reply to this inquiry. Submitting does not confirm availability or pricing.</p><button type="submit">SEND MY REQUEST ↗</button><div id="form-result" role="status" aria-live="polite"></div>
+</form></section>
+</main>
+<footer><a class="wordmark" href="#">RAMBLELON<span>®</span></a><p>GOOD MUSIC CONNECTS US.</p><a href="#">BACK TO TOP ↑</a></footer>
+<script src="/booking.js" type="module"></script>
+</body>
+</html>
